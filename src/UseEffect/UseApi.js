@@ -5,15 +5,19 @@ const UseApi = () => {
     const[users,setusers]=useState([])
 
 
-    const getUsers= async () => {
-            const response= await fetch('https://jsonplaceholder.typicode.com/photos');
+    const getUsers= async (abortController) => {
+            const response= await fetch('https://jsonplaceholder.typicode.com/photos', {signal: abortController.signal});
             // console.log(response);
            setusers (await response.json());
             // console.log(data)
     }
 
     useEffect(()=>{
-        getUsers();
+        const abortController = new AbortController();
+
+        getUsers(abortController);
+
+        return () => abortController.abort();
     },[setusers])
   return (
     <>
